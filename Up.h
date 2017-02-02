@@ -1,21 +1,35 @@
 #ifndef Up_h
 #define Up_h
 
+#include <PinChangeInterrupt.h>
+#include <PinChangeInterruptBoards.h>
+#include <PinChangeInterruptPins.h>
+#include <PinChangeInterruptSettings.h>
+
 #include "Arduino.h"
 
 #include "BaseFlightController.h"
+#include "ConversionUtils.h"
+#include "RXForwarder.h"
+#include "PWMReader.h"
 
 class BaseCommandExecutor;
 class BaseCommandHandler;
+class RXForwarder;
+class PWMReader;
 
 class Up {
   private:
     BaseCommandExecutor *commandExecutor = NULL;
     BaseFlightController *flightController = NULL;
+    RXForwarder *rxForwarder = NULL;
+    PWMReader *pwmReader = NULL;
   public:
     ~Up();
     const BaseCommandExecutor* getCommandExecutor() const;
     const BaseFlightController* getFlightController() const;
+    const RXForwarder* getRXForwarder() const;
+    const PWMReader* getPWMReader() const;
     void initialize();
     void setup();
     void loop();
