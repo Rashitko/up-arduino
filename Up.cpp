@@ -9,6 +9,9 @@ const BaseFlightController* Up::getFlightController() const {
 }
 
 void Up::initialize() {
+  Serial.begin(9600);
+  while (!Serial) ;
+  
   this->commandExecutor = new BaseCommandExecutor();
   this->flightController = new BaseFlightController();
 }
@@ -21,3 +24,14 @@ void Up::setup() {
 void Up::loop() {
   getCommandExecutor()->loop();
 }
+
+Up::~Up() {
+  if (this->commandExecutor != NULL) {
+    delete this->commandExecutor;
+  }
+  if (this->flightController != NULL) {
+    delete this->flightController;
+  }
+}
+
+

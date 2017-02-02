@@ -6,8 +6,7 @@
 Up up;
 
 void setup() {
-  Serial.begin(9600);
-  while (!Serial) ;
+  
 
   up.initialize();
   up.getCommandExecutor()->setConfirmsEnabled(true);

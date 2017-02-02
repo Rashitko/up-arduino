@@ -13,6 +13,7 @@ class Up {
     BaseCommandExecutor *commandExecutor = NULL;
     BaseFlightController *flightController = NULL;
   public:
+    ~Up();
     const BaseCommandExecutor* getCommandExecutor() const;
     const BaseFlightController* getFlightController() const;
     void initialize();
