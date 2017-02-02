@@ -4,8 +4,12 @@
 #include "Arduino.h"
 #include "Up.h"
 
+class Up;
+
 class PWMReader {
   private:
+    Up *up = NULL;
+    
     volatile uint8_t updateFlagsShared;
 
     uint16_t ailInShared;
@@ -14,6 +18,13 @@ class PWMReader {
     uint16_t rudInShared;
     uint16_t aux1InShared;
     uint16_t aux2InShared;
+
+    uint16_t ailPWM;
+    uint16_t elePWM;
+    uint16_t thrPWM;
+    uint16_t rudPWM;
+    uint16_t aux1PWM;
+    uint16_t aux2PWM;
 
     uint32_t ailStart;
     uint32_t eleStart;
@@ -42,6 +53,8 @@ class PWMReader {
     const static byte RUD_PIN_DEFAULT = 10;
     const static byte AUX1_PIN_DEFAULT = 11;
     const static byte AUX2_PIN_DEFAULT = 12;
+
+    void initialize(const Up *up);
 
     const int getAileronsPin() const;
     const int getElevatorPin() const;

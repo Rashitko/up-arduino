@@ -40,6 +40,21 @@ class RXForwarder {
     void setDelay(const int forwardDelay);
     void setEnabled(const bool enabled);
     const bool isEnabled() const;
+
+    void setAilerons(const int pwm);
+    void setElevator(const int pwm);
+    void setThrottle(const int pwm);
+    void setRudder(const int pwm);
+    void setAUX1(const int pwm);
+    void setAUX2(const int pwm);
+
+    const short getAilerons() const;
+    const short getElevator() const;
+    const short getThrottle() const;
+    const short getRudder() const;
+    const short getAUX1() const;
+    const short getAUX2() const;
+    
 };
 
 #endif

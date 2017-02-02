@@ -1,5 +1,9 @@
 #include "PWMReader.h"
 
+void PWMReader::initialize(const Up *up) {
+  this->up = up;
+}
+
 const int PWMReader::getAileronsPin() const {
   return ailPin;
 }
@@ -103,13 +107,6 @@ void PWMReader::calcAux2() {
 }
 
 void PWMReader::loop() {
-  static uint16_t ailIn;
-  static uint16_t eleIn;
-  static uint16_t thrIn;
-  static uint16_t rudIn;
-  static uint16_t aux1In;
-  static uint16_t aux2In;
-
   static uint8_t updateFlags;
   if (updateFlagsShared) {
     noInterrupts();
@@ -117,23 +114,23 @@ void PWMReader::loop() {
     updateFlags = updateFlagsShared;
     updateFlagsShared = 0;
 
-    ailIn = ailInShared;
-    eleIn = eleInShared;
-    thrIn = thrInShared;
-    rudIn = rudInShared;
-    aux1In = aux1InShared;
-    aux2In = aux2InShared;
+    ailPWM = ailInShared;
+    elePWM = eleInShared;
+    thrPWM = thrInShared;
+    rudPWM = rudInShared;
+    aux1PWM = aux1InShared;
+    aux2PWM = aux2InShared;
 
     interrupts();
   }
 
   if (updateFlags) {
-//    pwmReader.setAilerons(ailIn);
-//    pwmReader.setElevator(eleIn);
-//    pwmReader.setThrottle(thrIn);
-//    pwmReader.setRudder(rudIn);
-//    pwmReader.setAux1(aux1In);
-//    pwmReader.setAux2(aux2In);
+    up->getRXForwarder()->setAilerons(ailPWM);
+    up->getRXForwarder()->setElevator(elePWM);
+    up->getRXForwarder()->setThrottle(thrPWM);
+    up->getRXForwarder()->setRudder(rudPWM);
+    up->getRXForwarder()->setAUX1(aux1PWM);
+    up->getRXForwarder()->setAUX2(aux2PWM);
   }
   updateFlags = 0;
 }
