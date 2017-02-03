@@ -12,11 +12,13 @@
 #include "ConversionUtils.h"
 #include "RXForwarder.h"
 #include "PWMReader.h"
+#include "OrientationProvider.h"
 
 class BaseCommandExecutor;
 class BaseCommandHandler;
 class RXForwarder;
 class PWMReader;
+class OrientationProvider;
 
 class Up {
   private:
@@ -24,12 +26,18 @@ class Up {
     BaseFlightController *flightController = NULL;
     RXForwarder *rxForwarder = NULL;
     PWMReader *pwmReader = NULL;
+    OrientationProvider* orientationProvider = NULL;
+
+    void initializeSerial();
   public:
+    Up();
+    Up(BaseCommandExecutor *commandExecutor, BaseFlightController *flightController, RXForwarder *rxForwarder, PWMReader *pwmReader, OrientationProvider* orientationProvider);
     ~Up();
     const BaseCommandExecutor* getCommandExecutor() const;
     const BaseFlightController* getFlightController() const;
     const RXForwarder* getRXForwarder() const;
     const PWMReader* getPWMReader() const;
+    const OrientationProvider* getOrientationProvider() const;
     void initialize();
     void setup();
     void loop();
