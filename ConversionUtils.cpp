@@ -38,6 +38,25 @@ const int ConversionUtils::floatToBytes(const float value, unsigned char data[])
   return FLOAT_SIZE;
 }
 
+const bool ConversionUtils::boolFromBytes(const unsigned char data[]) {
+  BoolBytes u;
+  for (int i = 0; i < BOOL_SIZE; i++) {
+    const int dataIndex = BOOL_SIZE - 1 - i;
+    u.asBytes[i] = data[dataIndex];
+  }
+  return u.asBool;
+}
+
+const int ConversionUtils::boolToBytes(const bool value, unsigned char data[]) {
+  BoolBytes u;
+  u.asBool = value;
+  for (int i = 0; i < BOOL_SIZE; i++) {
+    const int dataIndex = BOOL_SIZE - 1 - i;
+    data[dataIndex] = u.asBytes[i];
+  }
+  return BOOL_SIZE;
+}
+
 const void ConversionUtils::packCommandWithPayload(const char cmdType, const unsigned char data[], const int dataSize, unsigned char result[]) {
   result[0] = cmdType;
   for (int i = 0; i < dataSize; i++) {

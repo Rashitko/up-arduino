@@ -2,6 +2,7 @@
 #include "AltitudeCommandHandler.h"
 #include "HeadingCommandHandler.h"
 #include "LocationCommandHandler.h"
+#include "PanicCommandHandler.h"
 
 
 Up *up = NULL;
@@ -23,6 +24,10 @@ void setup() {
 
   LocationCommandHandler locationHandler;
   up->getCommandExecutor()->addHandler(&locationHandler);
+
+  PanicCommandHandler panicHandler;
+  up->getCommandExecutor()->addHandler(&panicHandler);
+
 
   // Setup Up
   up->setup();
