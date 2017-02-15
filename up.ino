@@ -6,6 +6,10 @@
 
 
 Up *up = NULL;
+AltitudeCommandHandler altitudeHandler;
+HeadingCommandHandler headingHandler;
+LocationCommandHandler locationHandler;
+PanicCommandHandler panicHandler;
 
 void setup() {
   up = new Up();
@@ -17,18 +21,10 @@ void setup() {
   up->getCommandExecutor()->setConfirmsEnabled(true);
 
   // Register handlers
-  AltitudeCommandHandler altitudeHandler;
   up->getCommandExecutor()->addHandler(&altitudeHandler);
-
-  HeadingCommandHandler headingHandler;
   up->getCommandExecutor()->addHandler(&headingHandler);
-
-  LocationCommandHandler locationHandler;
   up->getCommandExecutor()->addHandler(&locationHandler);
-
-//  PanicCommandHandler panicHandler;
-//  up->getCommandExecutor()->addHandler(&panicHandler);
-
+  up->getCommandExecutor()->addHandler(&panicHandler);
 
   // Setup Up
   up->setup();

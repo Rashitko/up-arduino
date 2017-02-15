@@ -13,7 +13,7 @@ class PanicCommandHandler: public BaseCommandHandler {
     static const byte PANIC_COMMAND_TYPE = 'p';
     static const byte PANIC_COMMAND_SIZE = 3;
     bool inPanic = false;
-    bool requiredDelay = 0;
+    short requiredDelay = 0;
     OrientationProvider *orientationProvider = NULL;
   public:
     void initialize();
