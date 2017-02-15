@@ -30,6 +30,7 @@ class OrientationProvider {
     void initialize(const Up *up);
     void loop();
     const MPUReader* getMPUReader() const;
+    void setEnabled(const bool enabled);
     int getDelay() const;
     void setDelay(const int newDelay);
     void setYaw(const float yaw);

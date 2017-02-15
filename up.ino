@@ -13,6 +13,7 @@ void setup() {
   
   // Set various options
   up->getRXForwarder()->setEnabled(false);
+  up->getOrientationProvider()->setEnabled(true);
   up->getCommandExecutor()->setConfirmsEnabled(true);
 
   // Register handlers
@@ -25,8 +26,8 @@ void setup() {
   LocationCommandHandler locationHandler;
   up->getCommandExecutor()->addHandler(&locationHandler);
 
-  PanicCommandHandler panicHandler;
-  up->getCommandExecutor()->addHandler(&panicHandler);
+//  PanicCommandHandler panicHandler;
+//  up->getCommandExecutor()->addHandler(&panicHandler);
 
 
   // Setup Up

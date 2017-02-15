@@ -20,6 +20,10 @@ const MPUReader* OrientationProvider::getMPUReader() const {
   return mpuReader;
 }
 
+void OrientationProvider::setEnabled(const bool enabled) {
+  this->enabled = enabled;
+}
+
 int OrientationProvider::getDelay() const {
   return forwardDelay;
 }
@@ -53,6 +57,9 @@ float OrientationProvider::getRoll() const {
 }
 
 void OrientationProvider::forwardOrientation() {
+  if (!enabled) {
+    return;
+  }
   unsigned char data[PAYLOAD_SIZE];
 
   unsigned char yawData[ConversionUtils::FLOAT_SIZE];
