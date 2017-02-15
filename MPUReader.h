@@ -12,13 +12,13 @@
 
 
 #include "Arduino.h"
-#include "Up.h"
+#include "OrientationProvider.h"
 
-class Up;
+class OrientationProvider;
 
 class MPUReader {
   private:
-    Up *up = NULL;
+    OrientationProvider *orientationProvider = NULL;
     MPU6050 mpu;
     
     bool dmpReady = false;
@@ -40,6 +40,8 @@ class MPUReader {
     int xAccelOffset = X_ACCEL_OFFSET_DEFAULT;
     int yAccelOffset = Y_ACCEL_OFFSET_DEFAULT;
     int zAccelOffset = Z_ACCEL_OFFSET_DEFAULT;
+
+    float radsToDegrees(const float rads);
   public:
     const static int INTERRUPT_PIN = 7;
     
@@ -50,7 +52,7 @@ class MPUReader {
     const static int Y_ACCEL_OFFSET_DEFAULT = -283;
     const static int Z_ACCEL_OFFSET_DEFAULT = 814;
     
-    MPUReader(const Up *up);
+    MPUReader(const OrientationProvider *orientationProvider);
     void loop();
     
     void setXGyroOffset(const int offset);

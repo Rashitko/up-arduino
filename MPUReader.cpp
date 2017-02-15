@@ -1,8 +1,8 @@
 #include "MPUReader.h"
 #include "MPU6050_6Axis_MotionApps20.h"
 
-MPUReader::MPUReader(const Up *up) {
-  this->up = up;
+MPUReader::MPUReader(const OrientationProvider *orientationProvider) {
+  this->orientationProvider = orientationProvider;
 
 #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
   Wire.begin();
@@ -88,12 +88,10 @@ void MPUReader::loop() {
     mpu.dmpGetQuaternion(&q, fifoBuffer);
     mpu.dmpGetGravity(&gravity, &q);
     mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
-    Serial.print("ypr\t");
-    Serial.print(ypr[0] * 180 / M_PI);
-    Serial.print("\t");
-    Serial.print(ypr[1] * 180 / M_PI);
-    Serial.print("\t");
-    Serial.println(ypr[2] * 180 / M_PI);
+
+    orientationProvider->setYaw(radsToDegrees(ypr[0]));
+    orientationProvider->setPitch(radsToDegrees(ypr[1]));
+    orientationProvider->setRoll(radsToDegrees(ypr[2]));
   }
 }
 
@@ -122,5 +120,9 @@ void MPUReader::setZAccelOffset(const int offset) {
 
 void MPUReader::dmpDataReady() {
   mpuInterrupt = true;
+}
+
+float MPUReader::radsToDegrees(const float rads) {
+  return rads * 180 / M_PI;
 }
 
