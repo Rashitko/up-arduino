@@ -3,13 +3,15 @@
 #include "HeadingCommandHandler.h"
 #include "LocationCommandHandler.h"
 #include "PanicCommandHandler.h"
-
+#include "PIDsTuningsHandler.h"
 
 Up *up = NULL;
 AltitudeCommandHandler altitudeHandler;
 HeadingCommandHandler headingHandler;
 LocationCommandHandler locationHandler;
 PanicCommandHandler panicHandler;
+PIDsTuningsHandler pidsHandler;
+long start = 0;
 
 void setup() {
   up = new Up();
@@ -17,7 +19,7 @@ void setup() {
   
   // Set various options
   up->getRXForwarder()->setEnabled(false);
-  up->getOrientationProvider()->setEnabled(true);
+  up->getOrientationProvider()->setEnabled(false);
   up->getCommandExecutor()->setConfirmsEnabled(true);
 
   // Register handlers
@@ -25,6 +27,7 @@ void setup() {
   up->getCommandExecutor()->addHandler(&headingHandler);
   up->getCommandExecutor()->addHandler(&locationHandler);
   up->getCommandExecutor()->addHandler(&panicHandler);
+  up->getCommandExecutor()->addHandler(&pidsHandler);
 
   // Setup Up
   up->setup();

@@ -52,6 +52,30 @@ void PWMReader::setAUX2Pin(const int pin) {
   aux2Pin = pin;
 }
 
+const int PWMReader::getAilerons() const {
+ return ailPWM; 
+}
+
+const int PWMReader::getElevator() const {
+  return elePWM;
+}
+
+const int PWMReader::getThrottle() const {
+  return thrPWM;
+}
+
+const int PWMReader::getRudder() const {
+  return rudPWM;
+}
+
+const int PWMReader::getAUX1() const {
+  return aux1PWM;
+}
+
+const int PWMReader::getAUX2() const {
+  return aux2PWM;
+}
+
 void PWMReader::calcCh1() {
   if (digitalRead(getAileronsPin()) == HIGH) {
     ailStart = micros();
@@ -114,12 +138,12 @@ void PWMReader::loop() {
     updateFlags = updateFlagsShared;
     updateFlagsShared = 0;
 
-    ailPWM = ailInShared;
-    elePWM = eleInShared;
-    thrPWM = thrInShared;
-    rudPWM = rudInShared;
-    aux1PWM = aux1InShared;
-    aux2PWM = aux2InShared;
+    ailPWM = constrain(ailInShared, MIN_PWM, MAX_PWM);
+    elePWM = constrain(eleInShared, MIN_PWM, MAX_PWM);
+    thrPWM = constrain(thrInShared, MIN_PWM, MAX_PWM);
+    rudPWM = constrain(rudInShared, MIN_PWM, MAX_PWM);
+    aux1PWM = constrain(aux1InShared, MIN_PWM, MAX_PWM);
+    aux2PWM = constrain(aux2InShared, MIN_PWM, MAX_PWM);
 
     interrupts();
   }

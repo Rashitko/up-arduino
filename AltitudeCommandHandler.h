@@ -20,7 +20,6 @@ class AltitudeCommandHandler: public BaseCommandHandler {
     int getPayloadSize();
     bool hasExecuted(byte payload[], const int payloadSize);
     void executeConfirm();
-    const bool isArmed();
 };
 
 #endif

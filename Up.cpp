@@ -5,14 +5,16 @@ Up::Up() {
   flightController = new BaseFlightController();
   rxForwarder = new RXForwarder();
   pwmReader = new PWMReader();
+  servoController = new ServoController();
   orientationProvider = new OrientationProvider();
 }
 
-Up::Up(BaseCommandExecutor *commandExecutor, BaseFlightController *flightController, RXForwarder *rxForwarder, PWMReader *pwmReader, OrientationProvider* orientationProvider) {
+Up::Up(BaseCommandExecutor *commandExecutor, BaseFlightController *flightController, RXForwarder *rxForwarder, PWMReader *pwmReader, ServoController *servoController, OrientationProvider* orientationProvider) {
   this->commandExecutor = commandExecutor;
   this->flightController = flightController;
   this->rxForwarder = rxForwarder;
   this->pwmReader = pwmReader;
+  this->servoController = servoController;
   this->orientationProvider = orientationProvider;
 }
 
@@ -32,6 +34,10 @@ const PWMReader* Up::getPWMReader() const {
   return pwmReader;
 }
 
+const ServoController* Up::getServoController() const {
+  return servoController;
+}
+
 const OrientationProvider* Up::getOrientationProvider() const {
   return orientationProvider;
 }
@@ -43,7 +49,9 @@ void Up::initialize() {
 void Up::setup() {
   getCommandExecutor()->setUp(this);
   getCommandExecutor()->initialize();
+  getServoController()->initialize();
   getOrientationProvider()->initialize(this);
+  getFlightController()->initialize(this);
 }
 
 void Up::loop() {
@@ -51,6 +59,7 @@ void Up::loop() {
   getOrientationProvider()->loop();
   getPWMReader()->loop();
   getRXForwarder()->loop();
+  getFlightController()->loop();
 }
 
 Up::~Up() {

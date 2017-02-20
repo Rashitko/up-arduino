@@ -29,8 +29,10 @@ class MPUReader {
     uint8_t fifoBuffer[64];
 
     Quaternion q;
-    VectorFloat gravity;    // [x, y, z]            gravity vector
-    float ypr[3];           // [yaw, pitch, roll]   yaw/pitch/roll container and gravity vector
+    VectorFloat gravity;
+    VectorInt16 gyro;
+    float ypr[3];
+    float maxGyroX = 0;
     
     volatile bool mpuInterrupt = false;
 
@@ -51,6 +53,8 @@ class MPUReader {
     const static int X_ACCEL_OFFSET_DEFAULT = -735;
     const static int Y_ACCEL_OFFSET_DEFAULT = -283;
     const static int Z_ACCEL_OFFSET_DEFAULT = 814;
+
+    const static int RATE_CHANGE = 500;
     
     MPUReader(const OrientationProvider *orientationProvider);
     void loop();

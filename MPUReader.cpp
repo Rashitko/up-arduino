@@ -88,9 +88,21 @@ void MPUReader::loop() {
     mpu.dmpGetQuaternion(&q, fifoBuffer);
     mpu.dmpGetGravity(&gravity, &q);
     mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
-
+    mpu.dmpGetGyro(&gyro, fifoBuffer);
+    
+    float yawRate = constrain(gyro.z, -RATE_CHANGE, RATE_CHANGE);
+    yawRate = map(yawRate, -RATE_CHANGE, RATE_CHANGE, OrientationProvider::YAW_MIN_ANGLE, OrientationProvider::YAW_MAX_ANGLE);
+    orientationProvider->setYawRate(yawRate);
     orientationProvider->setYaw(radsToDegrees(ypr[0]));
+    
+    float pitchRate = constrain(gyro.y, -RATE_CHANGE, RATE_CHANGE);
+    pitchRate = map(pitchRate, -RATE_CHANGE, RATE_CHANGE, OrientationProvider::PITCH_MIN_ANGLE, OrientationProvider::PITCH_MAX_ANGLE);
+    orientationProvider->setPitchRate(pitchRate);
     orientationProvider->setPitch(radsToDegrees(ypr[1]));
+    
+    float rollRate = constrain(gyro.x, -RATE_CHANGE, RATE_CHANGE);
+    rollRate = map(rollRate, -RATE_CHANGE, RATE_CHANGE, OrientationProvider::ROLL_MIN_ANGLE, OrientationProvider::ROLL_MAX_ANGLE);
+    orientationProvider->setRollRate(rollRate);
     orientationProvider->setRoll(radsToDegrees(ypr[2]));
   }
 }

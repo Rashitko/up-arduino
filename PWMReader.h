@@ -19,12 +19,12 @@ class PWMReader {
     uint16_t aux1InShared;
     uint16_t aux2InShared;
 
-    uint16_t ailPWM;
-    uint16_t elePWM;
-    uint16_t thrPWM;
-    uint16_t rudPWM;
-    uint16_t aux1PWM;
-    uint16_t aux2PWM;
+    uint16_t ailPWM = PWM_DEFAULT;
+    uint16_t elePWM = PWM_DEFAULT;
+    uint16_t thrPWM = PWM_THROTTLE_DEFAULT;
+    uint16_t rudPWM = PWM_DEFAULT;
+    uint16_t aux1PWM = PWM_DEFAULT;
+    uint16_t aux2PWM = PWM_DEFAULT;
 
     uint32_t ailStart;
     uint32_t eleStart;
@@ -54,6 +54,11 @@ class PWMReader {
     const static byte AUX1_PIN_DEFAULT = 11;
     const static byte AUX2_PIN_DEFAULT = 12;
 
+    const static int MIN_PWM = 1000;
+    const static int MAX_PWM = 2000;   
+    const static int PWM_DEFAULT = 1500;
+    const static int PWM_THROTTLE_DEFAULT = 1000;
+
     void initialize(const Up *up);
 
     const int getAileronsPin() const;
@@ -68,6 +73,13 @@ class PWMReader {
     void setRudderPin(const int pin);
     void setAUX1Pin(const int pin);
     void setAUX2Pin(const int pin);
+
+    const int getAilerons() const;
+    const int getElevator() const;
+    const int getThrottle() const;
+    const int getRudder() const;
+    const int getAUX1() const;
+    const int getAUX2() const;
 
     void calcCh1();
     void calcCh2();

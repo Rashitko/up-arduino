@@ -13,29 +13,34 @@
 #include "RXForwarder.h"
 #include "PWMReader.h"
 #include "OrientationProvider.h"
+#include "ServoController.h"
 
 class BaseCommandExecutor;
 class BaseCommandHandler;
 class RXForwarder;
 class PWMReader;
 class OrientationProvider;
+class BaseFlightController;
+class ServoController;
 
 class Up {
   private:
     BaseCommandExecutor *commandExecutor = NULL;
     BaseFlightController *flightController = NULL;
     RXForwarder *rxForwarder = NULL;
+    ServoController *servoController = NULL;
     PWMReader *pwmReader = NULL;
     OrientationProvider* orientationProvider = NULL;
 
     void initializeSerial();
   public:
     Up();
-    Up(BaseCommandExecutor *commandExecutor, BaseFlightController *flightController, RXForwarder *rxForwarder, PWMReader *pwmReader, OrientationProvider* orientationProvider);
+    Up(BaseCommandExecutor *commandExecutor, BaseFlightController *flightController, RXForwarder *rxForwarder, PWMReader *pwmReader, ServoController *servoController, OrientationProvider* orientationProvider);
     ~Up();
     const BaseCommandExecutor* getCommandExecutor() const;
     const BaseFlightController* getFlightController() const;
     const RXForwarder* getRXForwarder() const;
+    const ServoController* getServoController() const;
     const PWMReader* getPWMReader() const;
     const OrientationProvider* getOrientationProvider() const;
     void initialize();

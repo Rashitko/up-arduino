@@ -44,6 +44,18 @@ void OrientationProvider::setRoll(const float roll) {
   this->roll = roll;
 }
 
+void OrientationProvider::setYawRate(const float yawRate) {
+  this->yawRate = yawRate;
+}
+
+void OrientationProvider::setPitchRate(const float pitchRate) {
+  this->pitchRate = pitchRate;
+}
+
+void OrientationProvider::setRollRate(const float rollRate) {
+  this->rollRate = rollRate;
+}
+
 float OrientationProvider::getYaw() const {
   return yaw;
 }
@@ -54,6 +66,18 @@ float OrientationProvider::getPitch() const {
 
 float OrientationProvider::getRoll() const {
   return roll;
+}
+
+float OrientationProvider::getYawRate() const {
+  return yawRate;
+}
+
+float OrientationProvider::getPitchRate() const {
+  return pitchRate;
+}
+
+float OrientationProvider::getRollRate() const {
+  return rollRate;
 }
 
 void OrientationProvider::forwardOrientation() {
