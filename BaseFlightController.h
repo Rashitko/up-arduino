@@ -66,6 +66,8 @@ class BaseFlightController {
     
     const static int PWM_CHANGE_LIMIT = 500;
 
+    const static int PID_ELEMENTS_COUNT = 3;
+
     BaseFlightController();
     ~BaseFlightController();
   
@@ -81,6 +83,14 @@ class BaseFlightController {
     const float getLongitude();
     bool setMode(const byte mode);
     const byte getMode(); 
+    const bool setAileronsRatePIDs(const float pids[PID_ELEMENTS_COUNT]);
+    void getAileronsRatePIDs(float pids[PID_ELEMENTS_COUNT]);
+    const bool setElevatorRatePIDs(const float pids[PID_ELEMENTS_COUNT]);
+    void getElevatorRatePIDs(float pids[PID_ELEMENTS_COUNT]);
+    const bool setAileronsStabPIDs(const float pids[PID_ELEMENTS_COUNT]);
+    void getAileronsStabPIDs(float pids[PID_ELEMENTS_COUNT]);
+    const bool setElevatorStabPIDs(const float pids[PID_ELEMENTS_COUNT]);
+    void getElevatorStabPIDs(float pids[PID_ELEMENTS_COUNT]);
     void initialize(const Up *up);
     void loop();
 };
