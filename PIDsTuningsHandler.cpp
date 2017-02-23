@@ -124,7 +124,7 @@ void PIDsTuningsHandler::sendPIDs(const byte responseCommandType) const {
 
   float eleRate[PID_ELEMENTS_COUNT];
   flightController->getElevatorRatePIDs(eleRate);
-  packPIDs(data, ailRate, PID_ELEMENTS_COUNT * sizeof(float));
+  packPIDs(data, eleRate, PID_ELEMENTS_COUNT * sizeof(float));
 
   float ailStab[PID_ELEMENTS_COUNT];
   flightController->getAileronsStabPIDs(ailStab);

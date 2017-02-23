@@ -19,7 +19,7 @@ void setup() {
   
   // Set various options
   up->getRXForwarder()->setEnabled(false);
-  up->getOrientationProvider()->setEnabled(true);
+  up->getOrientationProvider()->setEnabled(false);
   up->getCommandExecutor()->setConfirmsEnabled(true);
 
   // Register handlers
