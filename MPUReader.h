@@ -36,36 +36,21 @@ class MPUReader {
     
     volatile bool mpuInterrupt = false;
 
-    int xGyroOffset = X_GYRO_OFFSET_DEFAULT;
-    int yGyroOffset = Y_GYRO_OFFSET_DEFAULT;
-    int zGyroOffset = Z_GYRO_OFFSET_DEFAULT;
-    int xAccelOffset = X_ACCEL_OFFSET_DEFAULT;
-    int yAccelOffset = Y_ACCEL_OFFSET_DEFAULT;
-    int zAccelOffset = Z_ACCEL_OFFSET_DEFAULT;
-
     float radsToDegrees(const float rads);
   public:
-    const static int INTERRUPT_PIN = 7;
+    const static int INTERRUPT_PIN = 3;
     
-    const static int X_GYRO_OFFSET_DEFAULT = 36;
-    const static int Y_GYRO_OFFSET_DEFAULT = -23;
-    const static int Z_GYRO_OFFSET_DEFAULT = 17;
-    const static int X_ACCEL_OFFSET_DEFAULT = -735;
-    const static int Y_ACCEL_OFFSET_DEFAULT = -283;
-    const static int Z_ACCEL_OFFSET_DEFAULT = 814;
+    const static int X_GYRO_OFFSET = 36;
+    const static int Y_GYRO_OFFSET = -23;
+    const static int Z_GYRO_OFFSET = 17;
+    const static int X_ACCEL_OFFSET = -735;
+    const static int Y_ACCEL_OFFSET = -283;
+    const static int Z_ACCEL_OFFSET = 814;
 
     const static int RATE_CHANGE = 500;
     
     MPUReader(const OrientationProvider *orientationProvider);
     void loop();
-    
-    void setXGyroOffset(const int offset);
-    void setYGyroOffset(const int offset);
-    void setZGyroOffset(const int offset);
-    void setXAccelOffset(const int offset);
-    void setYAccelOffset(const int offset);
-    void setZAccelOffset(const int offset);
-    
     void dmpDataReady();
 };
 

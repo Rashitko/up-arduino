@@ -7,25 +7,23 @@
 
 class ServoController {
   private:
+    Up *up = NULL;
+    
     Servo aileronsServo;
     Servo elevatorServo;
     Servo throttleServo;
     Servo rudderServo;
 
-    int aileronsPin;
-    int elevatorPin;
-    int throttlePin;
-    int rudderPin;
+    const static short AILERONS_PIN = A3;
+    const static short ELEVATOR_PIN = A2;
+    const static short THROTTLE_PIN = A1;
+    const static short RUDDER_PIN = A0;
   public:
-    void initialize();
-    void setAilerons(const int pwm);
-    void setElevator(const int pwm);
-    void setThrottle(const int pwm);
-    void setRudder(const int pwm);
-    const int getAileronsPin() const;
-    const int getElevatorPin() const;
-    const int getThrottlePin() const;
-    const int getRudderPin() const;
+    void initialize(const Up* up);
+    void setAilerons(const short pwm);
+    void setElevator(const short pwm);
+    void setThrottle(const short pwm);
+    void setRudder(const short pwm);
 };
 
 #endif

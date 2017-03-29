@@ -13,7 +13,7 @@ class OrientationProvider {
     Up *up = NULL;
     MPUReader *mpuReader = NULL;
     
-    int forwardDelay = DEFAULT_DELAY;
+    short forwardDelay = DEFAULT_DELAY;
     bool enabled = true;
 
     unsigned long prevSentStamp = 0;
@@ -26,14 +26,14 @@ class OrientationProvider {
     float rollRate = 0;
     void forwardOrientation();
   public:
-    const static int DEFAULT_DELAY = 100;
+    const static short DEFAULT_DELAY = 100;
     const static byte COMMAND_TYPE = 'o';
     const static byte PAYLOAD_SIZE = 12;
 
     const static int ROLL_MAX_ANGLE = 90;
     const static int ROLL_MIN_ANGLE = -ROLL_MAX_ANGLE;
     
-    const static int PITCH_MAX_ANGLE = 90;
+    const static int PITCH_MAX_ANGLE = 45;
     const static int PITCH_MIN_ANGLE = -PITCH_MAX_ANGLE;
     
     const static int YAW_MAX_ANGLE = 180;

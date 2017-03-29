@@ -49,7 +49,7 @@ void Up::initialize() {
 void Up::setup() {
   getCommandExecutor()->setUp(this);
   getCommandExecutor()->initialize();
-  getServoController()->initialize();
+  getServoController()->initialize(this);
   getOrientationProvider()->initialize(this);
   getFlightController()->initialize(this);
 }
@@ -75,7 +75,12 @@ Up::~Up() {
 
 void Up::initializeSerial() {
   Serial.begin(9600);
-  while (!Serial) ;
+  const long initStart = millis();
+  while (!Serial) {
+    if (millis() - initStart > SERIAL_INIT_DELAY) {
+      break;
+    }
+  }
 }
 
 

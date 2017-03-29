@@ -21,7 +21,7 @@ class RXForwarder {
     
     void sendRXData();
    public:
-    const static short DEFAULT_DELAY = 100;
+    const static byte DEFAULT_DELAY = 50;
     const static short DEFAULT_PWM_CHANNEL = 1500;
     const static short DEFAULT_PWM_THROTTLE = 1000;
     
@@ -32,8 +32,8 @@ class RXForwarder {
     const static byte AUX1_POSITION = 4;
     const static byte AUX2_POSITION = 5;
  
-    const static byte COMMAND_TYPE = 'f';
-    const static byte PAYLOAD_SIZE = 6;
+    const static byte COMMAND_TYPE = 'r';
+    const static byte PAYLOAD_SIZE = 8;
     
     void loop();
     const int getDelay() const;

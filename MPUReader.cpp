@@ -10,26 +10,21 @@ MPUReader::MPUReader(const OrientationProvider *orientationProvider) {
 #elif I2CDEV_IMPLEMENTATION == I2CDEV_BUILTIN_FASTWIRE
   Fastwire::setup(400, true);
 #endif
-  // initialize device
-  //  Serial.println(F("Initializing I2C devices..."));
   mpu.initialize();
   pinMode(INTERRUPT_PIN, INPUT);
 
-  // verify connection
   if (!mpu.testConnection()) {
     Serial.println("MPU6050 connection failed");
   }
 
-  // load and configure the DMP
   devStatus = mpu.dmpInitialize();
 
-  // supply your own gyro offsets here, scaled for min sensitivity
-  mpu.setXGyroOffset(xGyroOffset);
-  mpu.setYGyroOffset(yGyroOffset);
-  mpu.setZGyroOffset(zGyroOffset);
-  mpu.setXAccelOffset(xAccelOffset);
-  mpu.setYAccelOffset(yAccelOffset);
-  mpu.setZAccelOffset(zAccelOffset);
+  mpu.setXGyroOffset(X_GYRO_OFFSET);
+  mpu.setYGyroOffset(Y_GYRO_OFFSET);
+  mpu.setZGyroOffset(Z_GYRO_OFFSET);
+  mpu.setXAccelOffset(X_ACCEL_OFFSET);
+  mpu.setYAccelOffset(Y_ACCEL_OFFSET);
+  mpu.setZAccelOffset(Z_ACCEL_OFFSET);
 
   // make sure it worked (returns 0 if so)
   if (devStatus == 0) {
@@ -105,29 +100,6 @@ void MPUReader::loop() {
     orientationProvider->setRollRate(rollRate);
     orientationProvider->setRoll(radsToDegrees(ypr[2]));
   }
-}
-
-void MPUReader::setXGyroOffset(const int offset) {
-  xGyroOffset = offset;
-}
-
-void MPUReader::setYGyroOffset(const int offset) {
-  yGyroOffset = offset;
-}
-
-void MPUReader::setZGyroOffset(const int offset) {
-  zGyroOffset = offset;
-}
-void MPUReader::setXAccelOffset(const int offset) {
-  xAccelOffset = offset;
-}
-
-void MPUReader::setYAccelOffset(const int offset) {
-  yAccelOffset = offset;
-}
-
-void MPUReader::setZAccelOffset(const int offset) {
-  zAccelOffset = offset;
 }
 
 void MPUReader::dmpDataReady() {

@@ -8,22 +8,22 @@ BaseFlightController::BaseFlightController() {
 
   aileronsStabPID = new PID(&rollAngle, &aileronsStabOutput, &aileronsRXAngle, DEFAULT_STAB_KP, DEFAULT_STAB_KI, DEFAULT_STAB_KD, DIRECT);
   aileronsStabPID->SetMode(AUTOMATIC);
-  aileronsStabPID->SetOutputLimits(OrientationProvider::ROLL_MIN_ANGLE, OrientationProvider::ROLL_MAX_ANGLE);
+  aileronsStabPID->SetOutputLimits(-PID_STAB_LIMIT, PID_STAB_LIMIT);
   aileronsStabPID->SetSampleTime(SAMPLE_TIME);
 
   aileronsRatePID = new PID(&rollRate, &aileronsRateOutput, &aileronsStabOutput, DEFAULT_RATE_KP, DEFAULT_RATE_KI, DEFAULT_RATE_KD, DIRECT);
   aileronsRatePID->SetMode(AUTOMATIC);
-  aileronsRatePID->SetOutputLimits(OrientationProvider::ROLL_MIN_ANGLE, OrientationProvider::ROLL_MAX_ANGLE);
+  aileronsRatePID->SetOutputLimits(-PID_RATE_LIMIT, PID_RATE_LIMIT);
   aileronsRatePID->SetSampleTime(SAMPLE_TIME);
 
   elevatorStabPID = new PID(&pitchAngle, &elevatorStabOutput, &elevatorRXAngle, DEFAULT_STAB_KP, DEFAULT_STAB_KI, DEFAULT_STAB_KD, DIRECT);
   elevatorStabPID->SetMode(AUTOMATIC);
-  elevatorStabPID->SetOutputLimits(OrientationProvider::PITCH_MIN_ANGLE, OrientationProvider::PITCH_MAX_ANGLE);
+  elevatorStabPID->SetOutputLimits(-PID_STAB_LIMIT, PID_STAB_LIMIT);
   elevatorStabPID->SetSampleTime(SAMPLE_TIME);
 
   elevatorRatePID = new PID(&pitchRate, &elevatorRateOutput, &elevatorStabOutput, DEFAULT_RATE_KP, DEFAULT_RATE_KI, DEFAULT_RATE_KD, DIRECT);
   elevatorRatePID->SetMode(AUTOMATIC);
-  elevatorRatePID->SetOutputLimits(OrientationProvider::PITCH_MIN_ANGLE, OrientationProvider::PITCH_MAX_ANGLE);
+  elevatorRatePID->SetOutputLimits(-PID_RATE_LIMIT, PID_RATE_LIMIT);
   elevatorRatePID->SetSampleTime(SAMPLE_TIME);
 }
 
@@ -83,10 +83,6 @@ bool BaseFlightController::setMode(const byte mode) {
       this->mode = mode;
       return true;
     default:
-      Serial.println(mode);
-      Serial.println(BaseFlightController::FLIGHT_MODE_RATE);
-      Serial.println(BaseFlightController::FLIGHT_MODE_FBW);
-      Serial.println(BaseFlightController::FLIGHT_MODE_RTH);
       return false;
   }
 }
@@ -180,24 +176,28 @@ void BaseFlightController::initialize(const Up *up) {
 
 void BaseFlightController::loop() {
   readRX();
-  //  if (mode == FLIGHT_MODE_FBW) {
-  rollAngle = orientationProvider->getRoll();
-  aileronsStabPID->Compute();
-  rollRate = orientationProvider->getRollRate();
-  aileronsRatePID->Compute();
-  const double aileronsOutput = PWMReader::PWM_DEFAULT + map(aileronsRateOutput, OrientationProvider::ROLL_MIN_ANGLE, OrientationProvider::ROLL_MAX_ANGLE, -PWM_CHANGE_LIMIT, PWM_CHANGE_LIMIT);
-  servoController->setAilerons(aileronsOutput);
+  if (aux1RXPWM > AUX_LOW_END) {
+    mode = FLIGHT_MODE_FBW;
+  } else {
+    mode = FLIGHT_MODE_RATE;
+  }
+  short ailOut = aileronsRXPWM;
+  short eleOut = elevatorRXPWM;
+  if (mode == FLIGHT_MODE_FBW) {
+    rollAngle = orientationProvider->getRoll();
+    aileronsStabPID->Compute();
+    rollRate = orientationProvider->getRollRate();
+    aileronsRatePID->Compute();
+    ailOut = PWMReader::PWM_DEFAULT + map((int) aileronsRateOutput, -PID_RATE_LIMIT, PID_RATE_LIMIT, -PWM_CHANGE_LIMIT, PWM_CHANGE_LIMIT);
 
-  pitchAngle = orientationProvider->getPitch();
-  elevatorStabPID->Compute();
-  pitchRate = orientationProvider->getPitchRate();
-  elevatorRatePID->Compute();
-  const double elevatorOutput = PWMReader::PWM_DEFAULT + map(elevatorRateOutput, OrientationProvider::PITCH_MIN_ANGLE, OrientationProvider::PITCH_MAX_ANGLE, -PWM_CHANGE_LIMIT, PWM_CHANGE_LIMIT);
-  servoController->setElevator(elevatorOutput);
-  //  } else {
-  //      servoController.setAilerons(aileronsRXPWM);
-  //      servoController.setElevator(elevatorRXPWM);
-  //  }
+    pitchAngle = orientationProvider->getPitch();
+    elevatorStabPID->Compute();
+    pitchRate = orientationProvider->getPitchRate();
+    elevatorRatePID->Compute();
+    eleOut = PWMReader::PWM_DEFAULT + map((int) elevatorRateOutput, -PID_RATE_LIMIT, PID_RATE_LIMIT, -PWM_CHANGE_LIMIT, PWM_CHANGE_LIMIT);
+  }
+  servoController->setAilerons(ailOut);
+  servoController->setElevator(eleOut);
   servoController->setThrottle(throttleRXPWM);
   servoController->setRudder(rudderRXPWM);
 }
@@ -209,5 +209,7 @@ void BaseFlightController::readRX() {
   elevatorRXAngle = map(elevatorRXPWM, PWMReader::MIN_PWM, PWMReader::MAX_PWM, OrientationProvider::PITCH_MIN_ANGLE, OrientationProvider::PITCH_MAX_ANGLE);
   throttleRXPWM = pwmReader->getThrottle();
   rudderRXPWM = pwmReader->getRudder();
+  aux1RXPWM = pwmReader->getAUX1();
+  aux2RXPWM = pwmReader->getAUX2();
 }
 

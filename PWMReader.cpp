@@ -5,55 +5,55 @@ void PWMReader::initialize(const Up *up) {
 }
 
 const int PWMReader::getAileronsPin() const {
-  return ailPin;
+  return AILERONS_PIN;
 }
 
 const int PWMReader::getElevatorPin() const {
-  return elePin;
+  return ELEVATOR_PIN;
 }
 
 const int PWMReader::getThrottlePin() const {
-  return thrPin;
+  return THROTTLE_PIN;
 }
 
 const int PWMReader::getRudderPin() const {
-  return rudPin;
+  return RUDDER_PIN;
 }
 
 const int PWMReader::getAUX1Pin() const {
-  return aux1Pin;
+  return AUX1_PIN;
 }
 
 const int PWMReader::getAUX2Pin() const {
-  return aux2Pin;
+  return AUX2_PIN;
 }
 
-void PWMReader::setAileronsPin(const int pin) {
-  ailPin = pin;
+const int PWMReader::getAileronsPCINTPin() const {
+  return AILERONS_PCINT_PIN;
 }
 
-void PWMReader::setElevatorPin(const int pin) {
-  elePin = pin;
+const int PWMReader::getElevatorPCINTPin() const {
+  return ELEVATOR_PCINT_PIN;
 }
 
-void PWMReader::setThrottlePin(const int pin) {
-  thrPin = pin;
+const int PWMReader::getThrottlePCINTPin() const {
+  return THROTTLE_PCINT_PIN;
 }
 
-void PWMReader::setRudderPin(const int pin) {
-  rudPin = pin;
+const int PWMReader::getRudderPCINTPin() const {
+  return RUDDER_PCINT_PIN;
 }
 
-void PWMReader::setAUX1Pin(const int pin) {
-  aux1Pin = pin;
+const int PWMReader::getAux1PCINTPin() const {
+  return AUX1_PCINT_PIN;
 }
 
-void PWMReader::setAUX2Pin(const int pin) {
-  aux2Pin = pin;
+const int PWMReader::getAux2PCINTPin() const {
+  return AUX2_PCINT_PIN;
 }
 
 const int PWMReader::getAilerons() const {
- return ailPWM; 
+  return ailPWM;
 }
 
 const int PWMReader::getElevator() const {
@@ -80,7 +80,7 @@ void PWMReader::calcCh1() {
   if (digitalRead(getAileronsPin()) == HIGH) {
     ailStart = micros();
   } else {
-    ailInShared = (uint16_t)(micros() - ailStart);
+    ailInShared = constrain(micros() - ailStart, MIN_PWM, MAX_PWM);
     updateFlagsShared |= AIL_FLAG;
   }
 }
@@ -89,7 +89,7 @@ void PWMReader::calcCh2() {
   if (digitalRead(getElevatorPin()) == HIGH) {
     eleStart = micros();
   } else {
-    eleInShared = (uint16_t)(micros() - eleStart);
+    eleInShared = constrain(micros() - eleStart, MIN_PWM, MAX_PWM);
     updateFlagsShared |= ELE_FLAG;
   }
 }
@@ -98,7 +98,7 @@ void PWMReader::calcCh3() {
   if (digitalRead(getThrottlePin()) == HIGH) {
     thrStart = micros();
   } else {
-    thrInShared = (uint16_t)(micros() - thrStart);
+    thrInShared = (micros() - thrStart);
     updateFlagsShared |= THR_FLAG;
   }
 }
@@ -107,7 +107,7 @@ void PWMReader::calcCh4() {
   if (digitalRead(getRudderPin()) == HIGH) {
     rudStart = micros();
   } else {
-    rudInShared = (uint16_t)(micros() - rudStart);
+    rudInShared = (micros() - rudStart);
     updateFlagsShared |= RUD_FLAG;
   }
 }
@@ -116,7 +116,7 @@ void PWMReader::calcAux1() {
   if (digitalRead(getAUX1Pin()) == HIGH) {
     aux1Start = micros();
   } else {
-    aux1InShared = (uint16_t)(micros() - aux1Start);
+    aux1InShared = (micros() - aux1Start);
     updateFlagsShared |= AUX1_FLAG;
   }
 }
@@ -125,7 +125,7 @@ void PWMReader::calcAux2() {
   if (digitalRead(getAUX2Pin()) == HIGH) {
     aux2Start = micros();
   } else {
-    aux2InShared = (uint16_t)(micros() - aux2Start);
+    aux2InShared = (micros() - aux2Start);
     updateFlagsShared |= AUX2_FLAG;
   }
 }
@@ -138,24 +138,43 @@ void PWMReader::loop() {
     updateFlags = updateFlagsShared;
     updateFlagsShared = 0;
 
-    ailPWM = constrain(ailInShared, MIN_PWM, MAX_PWM);
-    elePWM = constrain(eleInShared, MIN_PWM, MAX_PWM);
-    thrPWM = constrain(thrInShared, MIN_PWM, MAX_PWM);
-    rudPWM = constrain(rudInShared, MIN_PWM, MAX_PWM);
-    aux1PWM = constrain(aux1InShared, MIN_PWM, MAX_PWM);
-    aux2PWM = constrain(aux2InShared, MIN_PWM, MAX_PWM);
+    const short newAilPWM = ailInShared;
+    const short newElePWM = eleInShared;
+    const short newThrPWM = thrInShared;
+    const short newRudPWM = rudInShared;
+    aux1PWM = aux1InShared;
+    aux2PWM = aux2InShared;
 
     interrupts();
-  }
-
-  if (updateFlags) {
-    up->getRXForwarder()->setAilerons(ailPWM);
-    up->getRXForwarder()->setElevator(elePWM);
-    up->getRXForwarder()->setThrottle(thrPWM);
-    up->getRXForwarder()->setRudder(rudPWM);
-    up->getRXForwarder()->setAUX1(aux1PWM);
-    up->getRXForwarder()->setAUX2(aux2PWM);
+    if (shouldFilter(ailPWM, newAilPWM)) {
+      ailPWM = aileronsFilter.calculate(newAilPWM);
+    } else {
+      ailPWM = newAilPWM;
+      aileronsFilter.reset(ailPWM);
+    }
+    if (shouldFilter(elePWM, newElePWM)) {
+      elePWM = elevatorFilter.calculate(newElePWM);
+    } else {
+      elePWM = newElePWM;
+      elevatorFilter.reset(elePWM);
+    }
+    if (shouldFilter(thrPWM, newThrPWM)) {
+      thrPWM = throttleFilter.calculate(newThrPWM);
+    } else {
+      thrPWM = newThrPWM;
+      throttleFilter.reset(thrPWM);
+    }
+    if (shouldFilter(rudPWM, newRudPWM)) {
+      rudPWM = rudderFilter.calculate(newRudPWM);
+    } else {
+      rudPWM = newRudPWM;
+      rudderFilter.reset(rudPWM);
+    }
   }
   updateFlags = 0;
+}
+
+const bool PWMReader::shouldFilter(const short prevPWM, const short currentPWM) const {
+  return abs(prevPWM - currentPWM) < FILTER_CHANGE_LIMIT;
 }
 

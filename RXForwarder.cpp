@@ -14,12 +14,23 @@ void RXForwarder::loop() {
 void RXForwarder::sendRXData() {
   unsigned char data[PAYLOAD_SIZE];
 
-  data[AILERONS_POSITION] = this->ailerons;
-  data[ELEVATOR_POSITION] = this->elevator;
-  data[THROTTLE_POSITION] = this->throttle;
-  data[RUDDER_POSITION] = this->rudder;
-  data[AUX1_POSITION] = this->aux1;
-  data[AUX2_POSITION] = this->aux2;
+  unsigned char channelData[sizeof(short)];
+  
+  ConversionUtils::shortToBytes(ailerons, channelData);
+  data[0] = channelData[0];
+  data[1] = channelData[1];
+  
+  ConversionUtils::shortToBytes(elevator, channelData);
+  data[2] = channelData[0];
+  data[3] = channelData[1];
+  
+  ConversionUtils::shortToBytes(throttle, channelData);
+  data[4] = channelData[0];
+  data[5] = channelData[1];
+  
+  ConversionUtils::shortToBytes(rudder, channelData);
+  data[6] = channelData[0];
+  data[7] = channelData[1];
 
   unsigned char response[PAYLOAD_SIZE + 1];
   ConversionUtils::packCommandWithPayload(COMMAND_TYPE, data, PAYLOAD_SIZE, response);
@@ -43,27 +54,27 @@ const bool RXForwarder::isEnabled() const {
 }
 
 void RXForwarder::setAilerons(const int pwm) {
-  ailerons = pwm;
+  ailerons = constrain(pwm, PWMReader::MIN_PWM, PWMReader::MAX_PWM);
 }
 
 void RXForwarder::setElevator(const int pwm) {
-  elevator = pwm;
+  elevator = constrain(pwm, PWMReader::MIN_PWM, PWMReader::MAX_PWM);
 }
 
 void RXForwarder::setThrottle(const int pwm) {
-  throttle = pwm;
+  throttle = constrain(pwm, PWMReader::MIN_PWM, PWMReader::MAX_PWM);
 }
 
 void RXForwarder::setRudder(const int pwm) {
-  rudder = pwm;
+  rudder = constrain(pwm, PWMReader::MIN_PWM, PWMReader::MAX_PWM);
 }
 
 void RXForwarder::setAUX1(const int pwm) {
-  aux1 = pwm;
+  aux1 = constrain(pwm, PWMReader::MIN_PWM, PWMReader::MAX_PWM);
 }
 
 void RXForwarder::setAUX2(const int pwm) {
-  aux2 = pwm;
+  aux2 = constrain(pwm, PWMReader::MIN_PWM, PWMReader::MAX_PWM);
 }
 
 const short RXForwarder::getAilerons() const {

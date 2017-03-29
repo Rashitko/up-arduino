@@ -27,10 +27,12 @@ class BaseFlightController {
     float latitude = -1;
     float longitude = -1;
 
-    double aileronsRXPWM = 1500;
-    double elevatorRXPWM = 1500;
-    double throttleRXPWM = 1000;
-    double rudderRXPWM = 1500;
+    short aileronsRXPWM = 1500;
+    short elevatorRXPWM = 1500;
+    short throttleRXPWM = 1000;
+    short rudderRXPWM = 1500;
+    short aux1RXPWM = 1500;
+    short aux2RXPWM = 1500;
 
     double aileronsRXAngle = 0;
     double rollAngle = 0;
@@ -54,7 +56,7 @@ class BaseFlightController {
     const static byte FLIGHT_MODE_FBW = 'f';
     const static byte FLIGHT_MODE_RTH = 'h';
 
-    const static int SAMPLE_TIME = 10;
+    const static byte SAMPLE_TIME = 10;
 
     const static float DEFAULT_STAB_KP = 4.5;
     const static float DEFAULT_STAB_KI = 0;
@@ -63,10 +65,17 @@ class BaseFlightController {
     const static float DEFAULT_RATE_KP = 0.7;
     const static float DEFAULT_RATE_KI = 0;
     const static float DEFAULT_RATE_KD = 0;
-    
-    const static int PWM_CHANGE_LIMIT = 500;
 
-    const static int PID_ELEMENTS_COUNT = 3;
+    const static short AUX_LOW_END = 1300;
+    const static short AUX_MID_END = 1700;
+    const static short AUR_HIGH_END = 2000;
+    
+    const static short PWM_CHANGE_LIMIT = 500;
+
+    const static byte PID_ELEMENTS_COUNT = 3;
+
+    const static short PID_STAB_LIMIT = 500;
+    const static short PID_RATE_LIMIT = 400;
 
     BaseFlightController();
     ~BaseFlightController();

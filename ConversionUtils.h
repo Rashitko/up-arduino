@@ -10,7 +10,7 @@ union FloatBytes {
 
 union ShortBytes {
   short asShort;
-  unsigned char asBytes[sizeof(byte)];
+  unsigned char asBytes[sizeof(short)];
 };
 
 union IntBytes {
